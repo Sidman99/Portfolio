@@ -11,7 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Arctic Monkeys
 
-Arctic Monkeys have had a lot of releases of the years. Their first album, Whatever People Say I am That's What I'm Not, is a fast paced boyish album. A lot of the fans claim that after a while this energy dissipated on other albums. Let's see if that's the case.
+Arctic Monkeys have had a lot of releases over the years. Their first album, Whatever People Say I am That's What I'm Not, is a fast paced boyish album. A lot of the fans claim that after a while this energy dissipated on other albums. Let's see if that's the case.
 
 ```{r arcitc, echo=TRUE}
 library(spotifyr)
