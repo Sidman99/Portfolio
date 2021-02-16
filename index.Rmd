@@ -1,18 +1,25 @@
 ---
 title: "Portfolio"
 author: "Sidney Francis"
-date: "2/16/2021"
+date: "14/02/2021"
 output: html_document
 ---
-
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
 
 
 ## Arctic Monkeys
 
-Over the years the Arctic Monkeys had a lot of releases. The first Album, Whatever People Say I am, That's What I'm Not, is a fast paced energetic album clearly made by boys. A lot of fans claim that over the years their releases have gotten a lot more mature and less energetic. Let's compare their releases to see if the energy and the danceability have changed. 
+Arctic Monkeys have had a lot of releases of the years. Their first album, Whatever People Say I am That's What I'm Not, is a fast paced boyish album. A lot of the fans claim that after a while this energy dissipated on other albums. Let's see if that's the case.
 
-```{r (arctic, echo= TRUE)}
-ggplot(arctic, aes(x=album_name, y=energy)) + geom_col() + theme_grey() + ggtitle("Energy of Arctic Monkey's albums")
-
+```{r arcitc, echo=TRUE}
+library(spotifyr)
+arctic <- get_artist_audio_features('arctic monkeys')
+library(dplyr)
+library(ggplot2)
+ggplot(arctic, aes(x=album_name, y=energy)) + geom_col() + theme_grey() + ggtitle("Energy of Arctic Monkey's Albums")
 ```
+
+
 
