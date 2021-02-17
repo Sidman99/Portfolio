@@ -24,5 +24,9 @@ library(ggplot2)
 ggplot(arctic, aes(x=album_name, y=energy)) + geom_col() + theme_grey() + ggtitle("Energy of Arctic Monkey's Albums")
 ```
 
+***
+Is this sidebar life? 
+Hopefully it works
+
 
 
