@@ -2,7 +2,10 @@
 title: "Portfolio"
 author: "Sidney Francis"
 date: "14/02/2021"
-output: html_document
+output: 
+    flex_dashboard::flex_dashboard:
+      storyboard: true
+      theme: flatly 
 ---
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
