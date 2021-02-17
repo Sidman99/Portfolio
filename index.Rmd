@@ -28,6 +28,7 @@ Hopefully it works
 ```{r arcitc, echo=false}
 library(spotifyr)
 arctic <- get_artist_audio_features('arctic monkeys')
+library(plotly)
 library(dplyr)
 library(ggplot2)
 ggplot(arctic, aes(x=album_name, y=energy)) + geom_col() + theme_grey() + ggtitle("Energy of Arctic Monkey's Albums")
