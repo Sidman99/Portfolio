@@ -25,8 +25,9 @@ ggplot(arctic, aes(x=album_name, y=energy)) + geom_col() + theme_grey() + ggtitl
 ```
 
 ***
+
 Is this sidebar life? 
 Hopefully it works
 
 
-
+###Sick
