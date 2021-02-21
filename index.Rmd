@@ -7,10 +7,20 @@ output:
       storyboard: true
       theme: flatly 
 ---
+
+```{r}
+library(spotifyr)
+library(ggplot2)
+library(plotly)
+```
+
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+***
+Sikke dingen
 
 ## Arctic Monkeys
 
@@ -18,10 +28,9 @@ Arctic Monkeys have had a lot of releases over the years. Their first album, Wha
 
 
 ```{r arcitc, echo=false}
-library(spotifyr)
 arctic <- get_artist_audio_features('arctic monkeys')
-library(dplyr)
-library(ggplot2)
+
+
 ggplot(arctic, aes(x=album_name, y=energy)) + geom_col() + theme_grey() + ggtitle("Energy of Arctic Monkey's Albums")
 ```
 
