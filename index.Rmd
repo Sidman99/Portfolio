@@ -20,7 +20,7 @@ library(flexdashboard)
 ```
 ### Plan
 Which decade of modern music (60s - 10s) Is the most energetic in movement?
-We will determine this by comparing multiple playlists based on 'energy' and danceability'
+We will determine this by comparing multiple playlists based on 'energy' and 'danceability'
 
 We will use Spotify made playlists of all decades (given the fact that the algorithm is also made by Spotify this seemed fitting).
 
