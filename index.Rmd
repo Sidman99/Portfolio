@@ -3,35 +3,161 @@ title: "Portfolio"
 author: "Sidney Francis"
 date: "14/02/2021"
 output: 
-    flex_dashboard::flex_dashboard:
-      storyboard: true
-      theme: flatly 
+  flexdashboard::flex_dashboard:
+    storyboard: true
+    theme: default
+
 ---
 
 ```{r}
 library(spotifyr)
 library(ggplot2)
 library(plotly)
+library(tidyverse)
+library(usethis)
+library(remotes)
+library(flexdashboard)
+```
+### Plan
+Which decade of modern music (60s - 10s) Is the most energetic in movement?
+We will determine this by comparing multiple playlists based on 'energy' and danceability'
+
+We will use Spotify made playlists of all decades (given the fact that the algorithm is also made by Spotify this seemed fitting).
+
+Playlists used:
+
+- All out 60s 
+- All out 70s
+- All out 80s
+- All out 90s
+- All out 00s
+- All out 10s
+- And because it is just 2021 we will not include the 2020s. 
+
+### Graphs/Visuals
+
+
+```{r sixties, echo=FALSE}
+
+playlist_username <- 'spotify'
+playlist_uris <- c('37i9dQZF1DXaKIA8E7WcJj')
+sixties <-
+ get_playlist_audio_features(playlist_username, playlist_uris)
 ```
 
+```{r seventies, echo=FALSE}
+
+playlist_username <- 'spotify'
+playlist_uris <- c('37i9dQZF1DWTJ7xPn4vNaz')
+seventies <-
+ get_playlist_audio_features(playlist_username, playlist_uris)
+```
+
+```{r eighties, echo=FALSE}
+
+playlist_username <- 'spotify'
+playlist_uris <- c('37i9dQZF1DX4UtSsGT1Sbe')
+eighties <-
+ get_playlist_audio_features(playlist_username, playlist_uris)
+```
+
+```{r nineties, echo=FALSE}
+
+playlist_username <- 'spotify'
+playlist_uris <- c('37i9dQZF1DXbTxeAdrVG2l')
+nineties <-
+ get_playlist_audio_features(playlist_username, playlist_uris)
+```
+
+```{r thousands, echo=FALSE}
+
+playlist_username <- 'spotify'
+playlist_uris <- c('37i9dQZF1DX4o1oenSJRJd')
+thousands <-
+ get_playlist_audio_features(playlist_username, playlist_uris)
+```
+
+```{r tens, echo=FALSE}
+
+playlist_username <- 'spotify'
+playlist_uris <- c('37i9dQZF1DX5Ejj0EkURtP')
+tens <-
+ get_playlist_audio_features(playlist_username, playlist_uris)
+```
+
+
+
+
+```{r, echo=FALSE}
+p1 <- ggplot(sixties, aes(x=energy, y=danceability, size =)) + ggtitle("Sixties") +
+    geom_point(alpha=0.7)
+
+fig <- ggplotly(p1)
+
+fig <- fig %>% style(point = list(color = 'gold'), hoverinfo = "y", traces = 1)
+
+fig
+```
+
+```{r, echo=FALSE}
+p2 <- ggplot(seventies, aes(x=energy, y=danceability, size =)) + ggtitle("Seventies") +
+    geom_point(alpha=0.7)
+
+fig <- ggplotly(p2)
+
+fig <- fig %>% style(point = list(color = 'gold'), hoverinfo = "y", traces = 1)
+
+fig
+```
+
+
+```{r, echo=FALSE}
+p3 <- ggplot(eighties, aes(x=energy, y=danceability, size =)) + ggtitle("Eighties") +
+    geom_point(alpha=0.7)
+
+fig <- ggplotly(p3)
+
+fig <- fig %>% style(point = list(color = 'gold'), hoverinfo = "y", traces = 1)
+
+fig
+```
+
+```{r, ECHo=FALSE}
+p4 <- ggplot(nineties, aes(x=energy, y=danceability, size =)) + ggtitle("Nineties") +
+    geom_point(alpha=0.7)
+
+fig <- ggplotly(p4)
+
+fig <- fig %>% style(point = list(color = 'gold'), hoverinfo = "y", traces = 1)
+
+fig
+```
+
+```{r, echo=FALSE}
+p5 <- ggplot(thousands, aes(x=energy, y=danceability, size =)) + ggtitle("Zeroes") +
+    geom_point(alpha=0.7)
+
+fig <- ggplotly(p5)
+
+fig <- fig %>% style(point = list(color = 'gold'), hoverinfo = "y", traces = 1)
+
+fig
+```
+
+```{r, echo=FALSE}
+p6 <- ggplot(tens, aes(x=energy, y=danceability, size =)) + ggtitle("Tens") +
+    geom_point(alpha=0.7)
+
+fig <- ggplotly(p6)
+
+fig <- fig %>% style(point = list(color = 'gold'), hoverinfo = "y", traces = 1)
+
+fig
+```
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE)
+
+                  
 ```
-
-***
-Sikke dingen
-
-## Arctic Monkeys
-
-Arctic Monkeys have had a lot of releases over the years. Their first album, Whatever People Say I am That's What I'm Not, is a fast paced boyish album. A lot of the fans claim that after a while this energy dissipated on other albums. Let's see if that's the case.
-
-
-```{r arcitc, echo=false}
-arctic <- get_artist_audio_features('arctic monkeys')
-
-
-ggplot(arctic, aes(x=album_name, y=energy)) + geom_col() + theme_grey() + ggtitle("Energy of Arctic Monkey's Albums")
-```
-
 
