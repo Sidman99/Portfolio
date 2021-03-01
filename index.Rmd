@@ -35,12 +35,20 @@ Playlists used:
 - All out 10s
 - And because it is just 2021 we will not include the 2020s. 
 
-###Chroma/Cepstrograms
+***
+For some reason I'm unable to display more than one graph without them overlapping.
 
-Als ik dit doe werkt dat?
 
-```{r}
-ISS <- 
+### Chroma/Cepstrograms
+
+
+
+I'm Still Standing - Elton John
+Self similarities
+
+
+```{r, echo=FALSE}
+ISS <-
   get_tidy_audio_analysis("0lzpfrTARexLFXEACKSXTh") %>% # Change URI.
   compmus_align(bars, segments) %>%                     # Change `bars`
   select(bars) %>%                                      #   in all three
@@ -61,9 +69,48 @@ ISS <-
   )
 ```
 
+```{r}
+ISS %>%
+  compmus_self_similarity(timbre, "aitchison") %>% 
+  ggplot(
+    aes(
+      x = xstart + xduration / 2,
+      width = xduration,
+      y = ystart + yduration / 2,
+      height = yduration,
+      fill = d
+    )
+  ) +
+  geom_tile() +
+  coord_fixed() +
+  scale_fill_viridis_c(guide = "none") +
+  theme_classic() +
+  labs(x = "Time (s)", y = "Time (s)")
+
+```
+
+```{r}
+ISS %>%
+  compmus_gather_timbre() %>%
+  ggplot(
+    aes(
+      x = start + duration / 2,
+      width = duration,
+      y = basis,
+      fill = value
+    )
+  ) +
+  geom_tile() +
+  labs(x = "Time (s)", y = NULL, fill = "Magnitude") +
+  scale_fill_viridis_c() +                              
+  theme_classic()
+
+```
+
 
 
 ### Graphs/Visuals
+
 
 
 ```{r sixties, echo=FALSE}
@@ -132,11 +179,11 @@ fig
 p2 <- ggplot(seventies, aes(x=energy, y=danceability, size =)) + ggtitle("Seventies") +
     geom_point(alpha=0.7)
 
-fig <- ggplotly(p2)
+fig2 <- ggplotly(p2)
 
-fig <- fig %>% style(point = list(color = 'gold'), hoverinfo = "y", traces = 1)
+fig2 <- fig2 %>% style(point = list(color = 'gold'), hoverinfo = "y", traces = 1)
 
-fig
+fig2
 ```
 
 
@@ -144,44 +191,44 @@ fig
 p3 <- ggplot(eighties, aes(x=energy, y=danceability, size =)) + ggtitle("Eighties") +
     geom_point(alpha=0.7)
 
-fig <- ggplotly(p3)
+fig3 <- ggplotly(p3)
 
-fig <- fig %>% style(point = list(color = 'gold'), hoverinfo = "y", traces = 1)
+fig3 <- fig3 %>% style(point = list(color = 'gold'), hoverinfo = "y", traces = 1)
 
-fig
+fig3
 ```
 
 ```{r, ECHo=FALSE}
 p4 <- ggplot(nineties, aes(x=energy, y=danceability, size =)) + ggtitle("Nineties") +
     geom_point(alpha=0.7)
 
-fig <- ggplotly(p4)
+fig4 <- ggplotly(p4)
 
-fig <- fig %>% style(point = list(color = 'gold'), hoverinfo = "y", traces = 1)
+fig4 <- fig4 %>% style(point = list(color = 'gold'), hoverinfo = "y", traces = 1)
 
-fig
+fig4
 ```
 
 ```{r, echo=FALSE}
 p5 <- ggplot(thousands, aes(x=energy, y=danceability, size =)) + ggtitle("Zeroes") +
     geom_point(alpha=0.7)
 
-fig <- ggplotly(p5)
+fig5 <- ggplotly(p5)
 
-fig <- fig %>% style(point = list(color = 'gold'), hoverinfo = "y", traces = 1)
+fig5 <- fig5 %>% style(point = list(color = 'gold'), hoverinfo = "y", traces = 1)
 
-fig
+fig5
 ```
 
 ```{r, echo=FALSE}
 p6 <- ggplot(tens, aes(x=energy, y=danceability, size =)) + ggtitle("Tens") +
     geom_point(alpha=0.7)
 
-fig <- ggplotly(p6)
+fig6 <- ggplotly(p6)
 
-fig <- fig %>% style(point = list(color = 'gold'), hoverinfo = "y", traces = 1)
+fig6 <- fig6 %>% style(point = list(color = 'gold'), hoverinfo = "y", traces = 1)
 
-fig
+fig6
 ```
 
 ```{r setup, include=FALSE}
