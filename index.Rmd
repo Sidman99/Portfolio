@@ -17,6 +17,7 @@ library(tidyverse)
 library(usethis)
 library(remotes)
 library(flexdashboard)
+library(compmus)
 ```
 ### Plan
 Which decade of modern music (60s - 10s) Is the most energetic in movement?
@@ -33,6 +34,32 @@ Playlists used:
 - All out 00s
 - All out 10s
 - And because it is just 2021 we will not include the 2020s. 
+
+###Chroma/Cepstrograms
+
+```{r}
+ISS <- 
+  get_tidy_audio_analysis("0lzpfrTARexLFXEACKSXTh") %>% # Change URI.
+  compmus_align(bars, segments) %>%                     # Change `bars`
+  select(bars) %>%                                      #   in all three
+  unnest(bars) %>%                                      #   of these lines.
+  mutate(
+    pitches =
+      map(segments,
+        compmus_summarise, pitches,
+        method = "rms", norm = "euclidean"              # Change summary & norm.
+      )
+  ) %>%
+  mutate(
+    timbre =
+      map(segments,
+        compmus_summarise, timbre,
+        method = "rms", norm = "euclidean"              # Change summary & norm.
+      )
+  )
+```
+
+
 
 ### Graphs/Visuals
 
