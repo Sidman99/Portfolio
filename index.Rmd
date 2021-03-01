@@ -37,6 +37,8 @@ Playlists used:
 
 ###Chroma/Cepstrograms
 
+Als ik dit doe werkt dat?
+
 ```{r}
 ISS <- 
   get_tidy_audio_analysis("0lzpfrTARexLFXEACKSXTh") %>% # Change URI.
