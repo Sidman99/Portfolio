@@ -18,7 +18,154 @@ library(usethis)
 library(remotes)
 library(flexdashboard)
 library(compmus)
+library(cowplot)
+library(gridExtra)
 ```
+```{r, echo=FALSE}
+circshift <- function(v, n) {
+  if (n == 0) v else c(tail(v, n), head(v, -n))
+}
+
+#      C     C#    D     Eb    E     F     F#    G     Ab    A     Bb    B
+major_chord <-
+  c(   1,    0,    0,    0,    1,    0,    0,    1,    0,    0,    0,    0)
+minor_chord <-
+  c(   1,    0,    0,    1,    0,    0,    0,    1,    0,    0,    0,    0)
+seventh_chord <-
+  c(   1,    0,    0,    0,    1,    0,    0,    1,    0,    0,    1,    0)
+
+major_key <-
+  c(6.35, 2.23, 3.48, 2.33, 4.38, 4.09, 2.52, 5.19, 2.39, 3.66, 2.29, 2.88)
+minor_key <-
+  c(6.33, 2.68, 3.52, 5.38, 2.60, 3.53, 2.54, 4.75, 3.98, 2.69, 3.34, 3.17)
+
+chord_templates <-
+  tribble(
+    ~name, ~template,
+    "Gb:7", circshift(seventh_chord, 6),
+    "Gb:maj", circshift(major_chord, 6),
+    "Bb:min", circshift(minor_chord, 10),
+    "Db:maj", circshift(major_chord, 1),
+    "F:min", circshift(minor_chord, 5),
+    "Ab:7", circshift(seventh_chord, 8),
+    "Ab:maj", circshift(major_chord, 8),
+    "C:min", circshift(minor_chord, 0),
+    "Eb:7", circshift(seventh_chord, 3),
+    "Eb:maj", circshift(major_chord, 3),
+    "G:min", circshift(minor_chord, 7),
+    "Bb:7", circshift(seventh_chord, 10),
+    "Bb:maj", circshift(major_chord, 10),
+    "D:min", circshift(minor_chord, 2),
+    "F:7", circshift(seventh_chord, 5),
+    "F:maj", circshift(major_chord, 5),
+    "A:min", circshift(minor_chord, 9),
+    "C:7", circshift(seventh_chord, 0),
+    "C:maj", circshift(major_chord, 0),
+    "E:min", circshift(minor_chord, 4),
+    "G:7", circshift(seventh_chord, 7),
+    "G:maj", circshift(major_chord, 7),
+    "B:min", circshift(minor_chord, 11),
+    "D:7", circshift(seventh_chord, 2),
+    "D:maj", circshift(major_chord, 2),
+    "F#:min", circshift(minor_chord, 6),
+    "A:7", circshift(seventh_chord, 9),
+    "A:maj", circshift(major_chord, 9),
+    "C#:min", circshift(minor_chord, 1),
+    "E:7", circshift(seventh_chord, 4),
+    "E:maj", circshift(major_chord, 4),
+    "G#:min", circshift(minor_chord, 8),
+    "B:7", circshift(seventh_chord, 11),
+    "B:maj", circshift(major_chord, 11),
+    "D#:min", circshift(minor_chord, 3)
+  )
+
+key_templates <-
+  tribble(
+    ~name, ~template,
+    "Gb:maj", circshift(major_key, 6),
+    "Bb:min", circshift(minor_key, 10),
+    "Db:maj", circshift(major_key, 1),
+    "F:min", circshift(minor_key, 5),
+    "Ab:maj", circshift(major_key, 8),
+    "C:min", circshift(minor_key, 0),
+    "Eb:maj", circshift(major_key, 3),
+    "G:min", circshift(minor_key, 7),
+    "Bb:maj", circshift(major_key, 10),
+    "D:min", circshift(minor_key, 2),
+    "F:maj", circshift(major_key, 5),
+    "A:min", circshift(minor_key, 9),
+    "C:maj", circshift(major_key, 0),
+    "E:min", circshift(minor_key, 4),
+    "G:maj", circshift(major_key, 7),
+    "B:min", circshift(minor_key, 11),
+    "D:maj", circshift(major_key, 2),
+    "F#:min", circshift(minor_key, 6),
+    "A:maj", circshift(major_key, 9),
+    "C#:min", circshift(minor_key, 1),
+    "E:maj", circshift(major_key, 4),
+    "G#:min", circshift(minor_key, 8),
+    "B:maj", circshift(major_key, 11),
+    "D#:min", circshift(minor_key, 3)
+  )
+```
+
+```{r, sixties, echo=FALSE}
+playlist_username <- 'spotify'
+playlist_uris <- c('37i9dQZF1DXaKIA8E7WcJj')
+sixties<- 
+get_playlist_audio_features(playlist_username, playlist_uris)
+
+playlist_username <- 'spotify'
+playlist_uris <- c('37i9dQZF1DWTJ7xPn4vNaz')
+seventies<- get_playlist_audio_features(playlist_username, playlist_uris)
+
+playlist_username <- 'spotify'
+playlist_uris <- c('37i9dQZF1DX4UtSsGT1Sbe')
+eighties<-  get_playlist_audio_features(playlist_username, playlist_uris)
+
+playlist_username <- 'spotify'
+playlist_uris <- c('37i9dQZF1DXbTxeAdrVG2l')
+nineties<- get_playlist_audio_features(playlist_username, playlist_uris)
+
+playlist_username <- 'spotify'
+playlist_uris <- c('37i9dQZF1DX4o1oenSJRJd')
+thousands<- get_playlist_audio_features(playlist_username, playlist_uris)
+
+playlist_username <- 'spotify'
+playlist_uris <- c('37i9dQZF1DX5Ejj0EkURtP')
+tens<- get_playlist_audio_features(playlist_username, playlist_uris)
+```
+
+
+```{r, echo= FALSE}
+top20 <-
+  sixties %>% top_n(20, danceability) %>%
+  mutate(country = "The 60s") %>%
+  bind_rows(seventies %>% top_n(20, danceability) %>% mutate(country = "The 70s")) %>%
+  bind_rows(eighties %>% top_n(20, danceability) %>% mutate(country = "The 80s")) %>% 
+  bind_rows(nineties %>% top_n(20, danceability) %>% mutate(country = "The 90s")) %>%
+  bind_rows(thousands %>% top_n(20, danceability) %>% mutate(country = "The 00s")) %>%
+  bind_rows(tens %>% top_n(20, danceability) %>% mutate(country = "The 10s")) %>%
+  mutate(
+    country = fct_relevel(country, "The 10s", "The 00s", "The 90s", "The 80s", "The 70s", "The 60s")
+  )
+```
+
+```{r}
+top1 <-
+  sixties %>% top_n(1, energy) %>%
+  mutate(country = "The 60s") %>%
+  bind_rows(seventies %>% top_n(1, energy) %>% mutate(country = "The 70s")) %>%
+  bind_rows(eighties %>% top_n(1, energy) %>% mutate(country = "The 80s")) %>% 
+  bind_rows(nineties %>% top_n(1, energy) %>% mutate(country = "The 90s")) %>%
+  bind_rows(thousands %>% top_n(1, energy) %>% mutate(country = "The 00s")) %>%
+  bind_rows(tens %>% top_n(1, energy) %>% mutate(country = "The 10s")) %>%
+  mutate(
+    country = fct_relevel(country, "The 10s", "The 00s", "The 90s", "The 80s", "The 70s", "The 60s")
+  )
+```
+
+
 ### Plan
 Which decade of modern music (60s - 10s) Is the most energetic in movement?
 We will determine this by comparing multiple playlists based on 'energy' and 'danceability'
@@ -36,16 +183,81 @@ Playlists used:
 - And because it is just 2021 we will not include the 2020s. 
 
 ***
-For some reason I'm unable to display more than one graph without them overlapping.
+For some reason I'm unable to display more than one Key-, Chordo-, Chromagram without them overlapping.
 
 
-### Chroma/Cepstrograms
+### Histogram
+
+
+```{r, echo=FALSE}
+sixties_hist<- 
+hist(sixties$energy, main = "Energy in the 60s",
+     xlab = "Energy Level",
+     border="black", 
+     col="purple", 
+     xlim=c(0,1),
+     ylim = c(0, 3),
+     freq = FALSE)
+
+seventies_hist<-
+  hist(seventies$energy, main = "Energy in the 70s",  xlab = "Energy Level",
+       border="black", 
+     col="purple", 
+     xlim=c(0,1),
+    ylim = c(0, 3),
+     freq = FALSE)
+
+eighties_hist<-
+   hist(eighties$energy, main = "Energy in the 80s",  
+     xlab = "Energy Level",
+       border="black", 
+     col="purple", 
+     xlim=c(0,1),
+    ylim = c(0, 3),
+     freq = FALSE)
+     
+nineties_hist<-
+ hist(nineties$energy, main = "Energy in the 90s",  xlab = "Energy Level",
+      border="black", 
+     col="purple", 
+     xlim=c(0,1),
+    
+     ylim = c(0, 3),
+     freq = FALSE)
+
+zeroes_hist<- 
+   hist(thousands$energy, main = "Energy in the 00s",  xlab = "Energy Level",
+        border="black", 
+     col="purple", 
+     xlim=c(0,1),
+    
+     ylim = c(0, 3),
+     freq = FALSE)
+
+tens_hist<-
+   hist(tens$energy, main = "Energy in the 10s", xlab = "Energy Level",
+        border="black", 
+     col="purple", 
+     xlim=c(0,1),
+    
+     ylim = c(0, 3),
+     freq = FALSE,)
+
+
+     
+
+```
+
+
+***
+Here we have a clear view of the frequency of every energy level of every song in each playlist. This puts us one step closer to deciding which decade was the "Party Decade".
 
 
 
-I'm Still Standing - Elton John
-Self similarities
 
+### Chordogram/Keygram
+
+I'm still standing - Elton John
 
 ```{r, echo=FALSE}
 ISS <-
@@ -67,7 +279,52 @@ ISS <-
         method = "rms", norm = "euclidean"              # Change summary & norm.
       )
   )
+
+keygram <- ISS %>% 
+  compmus_match_pitch_template(
+    key_templates,         # Change to chord_templates if descired
+    method = "euclidean",  # Try different distance metrics
+    norm = "manhattan"     # Try different norms
+  ) %>%
+  ggplot(
+    aes(x = start + duration / 2, width = duration, y = name, fill = d)
+  ) + ggtitle("Keygram: 'I'm Still Standing'") +
+  geom_tile() +
+  scale_fill_viridis_c(guide = "none") +
+  theme_minimal() +
+  labs(x = "Time (s)", y = "Keys") 
+
+chordogram <- ISS %>% 
+  compmus_match_pitch_template(
+    chord_templates,         # Change to chord_templates if descired
+    method = "euclidean",  # Try different distance metrics
+    norm = "manhattan"     # Try different norms
+  ) %>%
+  ggplot(
+    aes(x = start + duration / 2, width = duration, y = name, fill = d)
+  ) + ggtitle("Chordogram: 'I'm Still Standing'") +
+  geom_tile() +
+  scale_fill_viridis_c(guide = "none") +
+  theme_minimal() +
+  labs(x = "Time (s)", y = "Chords")
+grid.arrange(keygram, chordogram)
+
 ```
+
+***
+These are the Keygram and Chordogram from one of the outliers. I haven't had the chance to compare these to other songs from my Corpus.
+
+
+
+### Chroma/Cepstrograms
+
+
+
+I'm Still Standing - Elton John
+Self similarities
+
+
+
 
 ```{r}
 ISS %>%
@@ -113,123 +370,53 @@ ISS %>%
 
 
 
-```{r sixties, echo=FALSE}
 
-playlist_username <- 'spotify'
-playlist_uris <- c('37i9dQZF1DXaKIA8E7WcJj')
-sixties <-
- get_playlist_audio_features(playlist_username, playlist_uris)
+
+
+
+
+
+```{r}
+  all_plots <-
+  top20 %>%  
+  ggplot(                          # Set up the plot.
+    aes(
+      x = energy,
+      y = danceability,
+      colour = mode,
+      size = track.popularity,
+      label = track.name           # Labels will be interactively visible.
+    )
+  ) +
+  geom_point(shape = ".") +                   # Scatter plot.
+  geom_rug(size = 0.1) +           # Add 'fringes' to show data distribution.
+  facet_wrap(~country) +           # Separate charts per country.
+  scale_x_continuous(              # Fine-tune the x axis.
+    limits = c(0, 1),
+    breaks = c(0, 0.50, 1),        # Use grid-lines for quadrants only.
+    minor_breaks = NULL            # Remove 'minor' grid-lines.
+  ) +
+  scale_y_continuous(              # Fine-tune the y axis in the same way.
+    limits = c(0.5, 1),
+    breaks = c(0, 0.50, 1),
+    minor_breaks = NULL
+  ) +
+  scale_colour_viridis_c(          # Use the cividis palette
+    option = "C",                  # Qualitative set.
+    alpha = 0.8,                   # Include some transparency
+    guide = "none"
+  ) +
+  scale_size_continuous(           # Fine-tune the sizes of each point.
+    guide = "none"                # Remove the legend for size.
+  ) +
+  theme_classic() +                  # Use a simpler theme.
+  labs(                            # Make the titles nice.
+    x = "Energy",
+    y = "Danceability"
+  )
+ggplotly(all_plots)
 ```
 
-```{r seventies, echo=FALSE}
-
-playlist_username <- 'spotify'
-playlist_uris <- c('37i9dQZF1DWTJ7xPn4vNaz')
-seventies <-
- get_playlist_audio_features(playlist_username, playlist_uris)
-```
-
-```{r eighties, echo=FALSE}
-
-playlist_username <- 'spotify'
-playlist_uris <- c('37i9dQZF1DX4UtSsGT1Sbe')
-eighties <-
- get_playlist_audio_features(playlist_username, playlist_uris)
-```
-
-```{r nineties, echo=FALSE}
-
-playlist_username <- 'spotify'
-playlist_uris <- c('37i9dQZF1DXbTxeAdrVG2l')
-nineties <-
- get_playlist_audio_features(playlist_username, playlist_uris)
-```
-
-```{r thousands, echo=FALSE}
-
-playlist_username <- 'spotify'
-playlist_uris <- c('37i9dQZF1DX4o1oenSJRJd')
-thousands <-
- get_playlist_audio_features(playlist_username, playlist_uris)
-```
-
-```{r tens, echo=FALSE}
-
-playlist_username <- 'spotify'
-playlist_uris <- c('37i9dQZF1DX5Ejj0EkURtP')
-tens <-
- get_playlist_audio_features(playlist_username, playlist_uris)
-```
-
-
-
-
-```{r, echo=FALSE}
-p1 <- ggplot(sixties, aes(x=energy, y=danceability, size =)) + ggtitle("Sixties") +
-    geom_point(alpha=0.7)
-
-fig <- ggplotly(p1)
-
-fig <- fig %>% style(point = list(color = 'gold'), hoverinfo = "y", traces = 1)
-
-fig
-```
-
-```{r, echo=FALSE}
-p2 <- ggplot(seventies, aes(x=energy, y=danceability, size =)) + ggtitle("Seventies") +
-    geom_point(alpha=0.7)
-
-fig2 <- ggplotly(p2)
-
-fig2 <- fig2 %>% style(point = list(color = 'gold'), hoverinfo = "y", traces = 1)
-
-fig2
-```
-
-
-```{r, echo=FALSE}
-p3 <- ggplot(eighties, aes(x=energy, y=danceability, size =)) + ggtitle("Eighties") +
-    geom_point(alpha=0.7)
-
-fig3 <- ggplotly(p3)
-
-fig3 <- fig3 %>% style(point = list(color = 'gold'), hoverinfo = "y", traces = 1)
-
-fig3
-```
-
-```{r, ECHo=FALSE}
-p4 <- ggplot(nineties, aes(x=energy, y=danceability, size =)) + ggtitle("Nineties") +
-    geom_point(alpha=0.7)
-
-fig4 <- ggplotly(p4)
-
-fig4 <- fig4 %>% style(point = list(color = 'gold'), hoverinfo = "y", traces = 1)
-
-fig4
-```
-
-```{r, echo=FALSE}
-p5 <- ggplot(thousands, aes(x=energy, y=danceability, size =)) + ggtitle("Zeroes") +
-    geom_point(alpha=0.7)
-
-fig5 <- ggplotly(p5)
-
-fig5 <- fig5 %>% style(point = list(color = 'gold'), hoverinfo = "y", traces = 1)
-
-fig5
-```
-
-```{r, echo=FALSE}
-p6 <- ggplot(tens, aes(x=energy, y=danceability, size =)) + ggtitle("Tens") +
-    geom_point(alpha=0.7)
-
-fig6 <- ggplotly(p6)
-
-fig6 <- fig6 %>% style(point = list(color = 'gold'), hoverinfo = "y", traces = 1)
-
-fig6
-```
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
