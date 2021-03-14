@@ -9,7 +9,7 @@ output:
 
 ---
 
-```{r}
+```{r, libaries}
 library(spotifyr)
 library(ggplot2)
 library(plotly)
@@ -21,7 +21,7 @@ library(compmus)
 library(cowplot)
 library(gridExtra)
 ```
-```{r, echo=FALSE}
+```{r, circs, echo=FALSE}
 circshift <- function(v, n) {
   if (n == 0) v else c(tail(v, n), head(v, -n))
 }
@@ -137,7 +137,7 @@ tens<- get_playlist_audio_features(playlist_username, playlist_uris)
 ```
 
 
-```{r, echo= FALSE}
+```{r, top20, echo= FALSE}
 top20 <-
   sixties %>% top_n(20, danceability) %>%
   mutate(country = "The 60s") %>%
@@ -151,7 +151,7 @@ top20 <-
   )
 ```
 
-```{r}
+```{r, TOP1, echo=FALSE}
 top1 <-
   sixties %>% top_n(1, energy) %>%
   mutate(country = "The 60s") %>%
@@ -165,10 +165,24 @@ top1 <-
   )
 ```
 
+```{r, top150, echo=FALSE}
+top150 <-
+  sixties %>% top_n(150, tempo) %>%
+  mutate(country = "The 60s") %>%
+  bind_rows(seventies %>% top_n(150, tempo) %>% mutate(country = "The 70s")) %>%
+  bind_rows(eighties %>% top_n(150, tempo) %>% mutate(country = "The 80s")) %>% 
+  bind_rows(nineties %>% top_n(150, tempo) %>% mutate(country = "The 90s")) %>%
+  bind_rows(thousands %>% top_n(150, tempo) %>% mutate(country = "The 00s")) %>%
+  bind_rows(tens %>% top_n(150, tempo) %>% mutate(country = "The 10s")) %>%
+  mutate(
+    country = fct_relevel(country, "The 10s", "The 00s", "The 90s", "The 80s", "The 70s", "The 60s")
+  )
+```
+
 
 ### Plan
-Which decade of modern music (60s - 10s) Is the most energetic in movement?
-We will determine this by comparing multiple playlists based on 'energy' and 'danceability'
+Which decade of modern music (60s - 10s) Is the most suitable to party? In other words what was the party decade?
+We will determine this by comparing multiple playlists based on energy, danceability and tempo.
 
 We will use Spotify made playlists of all decades (given the fact that the algorithm is also made by Spotify this seemed fitting).
 
@@ -185,11 +199,109 @@ Playlists used:
 ***
 For some reason I'm unable to display more than one Key-, Chordo-, Chromagram without them overlapping.
 
+### Quickest decade
+First we will be looking at the tempi of all songs for each decade. Then we will make tempograms for the most popular track from each decade.
+```{r, tempo_histogram, echo=FALSE}
+
+
+sixties_hista<- 
+hist(sixties$tempo, main = "Tempi in the 60s",
+     xlab = "Tempo (BPM)",
+     border="black", 
+     col="blue", 
+     xlim=c(50,250),
+     ylim = c(0, 60),
+     freq = TRUE)
+
+seventies_hista<-
+  hist(seventies$tempo, main = "Tempi in the 70s",  xlab = "Tempo (BPM)",
+       border="black", 
+     col="blue", 
+     xlim=c(50, 250),
+    ylim = c(0, 60),
+     freq = TRUE)
+
+eighties_hista<-
+   hist(eighties$tempo, main = "Tempi in the 80s",
+     xlab = "Tempo (BPM)",
+       border="black", 
+     col="blue", 
+     xlim=c(50,250),
+    ylim = c(0, 60),
+     freq = TRUE)
+     
+nineties_hista<-
+ hist(nineties$tempo, main = "Tempi in the 90s",  xlab = "Tempo (BPM)",
+      border="black", 
+     col="blue", 
+     xlim=c(50,250),
+     ylim = c(0, 60),
+     freq = TRUE)
+
+zeroes_hista<- 
+   hist(thousands$tempo, main = "Tempi in the 00s",  xlab = "Tempo (BPM)",
+        border="black", 
+     col="blue", 
+     xlim=c(50,250),
+     ylim = c(0, 60),
+     freq = TRUE)
+
+tens_hista<-
+   hist(tens$tempo, main = "Tempi in the 10s", xlab = "Tempo (BPM)",
+        border="black", 
+     col="blue", 
+     xlim=c(50,250),
+     ylim = c(0, 60),
+     freq = TRUE,)
+
+
+
+
+```
+
+
+### Tempi Popular Songs 
+```{r, one_analysis}
+
+
+shame70s <-
+  get_tidy_audio_analysis("1l1YTy9nJ0trwhsCGcimly")
+
+happy80s <-
+  get_tidy_audio_analysis("5YbgcwHjQhdT1BYQ4rxWlD")
+
+
+```
+
+```{r, tempograms}
+
+shame70s %>%
+  tempogram(window_size = 8, hop_size = 1, cyclic = TRUE) %>%
+  ggplot(aes(x = time, y = bpm, fill = power)) +
+  geom_raster() +
+  scale_fill_viridis_c(guide = "none") +
+  labs(x = "Time (s)", y = "Tempo (BPM)") +
+  theme_classic()
+
+
+happy80s %>%
+  tempogram(window_size = 8, hop_size = 1, cyclic = TRUE) %>%
+  ggplot(aes(x = time, y = bpm, fill = power)) +
+  geom_raster() +
+  scale_fill_viridis_c(guide = "none") +
+  labs(x = "Time (s)", y = "Tempo (BPM)") +
+  theme_classic()
+
+
+```
+
+*** 
+We'll be looking at two outliers in the form of tempograms.On the left a tempogram of an outlier (relatively high BPM in the seventies): It's a Shame  by the Spinners.On the right a tempogram of an outlier (relatively slow in the eighties): Don't Worry Be Happy by Bobby McFerry
 
 ### Histogram
 
 
-```{r, echo=FALSE}
+```{r, histos, echo=FALSE}
 sixties_hist<- 
 hist(sixties$energy, main = "Energy in the 60s",
      xlab = "Energy Level",
@@ -259,7 +371,7 @@ Here we have a clear view of the frequency of every energy level of every song i
 
 I'm still standing - Elton John
 
-```{r, echo=FALSE}
+```{r, ISS, echo=FALSE}
 ISS <-
   get_tidy_audio_analysis("0lzpfrTARexLFXEACKSXTh") %>% # Change URI.
   compmus_align(bars, segments) %>%                     # Change `bars`
@@ -326,7 +438,7 @@ Self similarities
 
 
 
-```{r}
+```{r, issgrams}
 ISS %>%
   compmus_self_similarity(timbre, "aitchison") %>% 
   ggplot(
@@ -346,7 +458,7 @@ ISS %>%
 
 ```
 
-```{r}
+```{r, issmoregrams}
 ISS %>%
   compmus_gather_timbre() %>%
   ggplot(
@@ -376,7 +488,7 @@ ISS %>%
 
 
 
-```{r}
+```{r, allplots}
   all_plots <-
   top20 %>%  
   ggplot(                          # Set up the plot.
