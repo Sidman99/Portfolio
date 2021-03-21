@@ -20,7 +20,15 @@ library(flexdashboard)
 library(compmus)
 library(cowplot)
 library(gridExtra)
+library(tidymodels)
+library(kknn)
+library(heatmaply)
+library(ggdendro)
+library(tibble)
 ```
+
+
+
 ```{r, circs, echo=FALSE}
 circshift <- function(v, n) {
   if (n == 0) v else c(tail(v, n), head(v, -n))
@@ -181,84 +189,159 @@ top150 <-
 
 
 ### Plan
-Which decade of modern music (60s - 10s) Is the most suitable to party? In other words what was the party decade?
-We will determine this by comparing multiple playlists based on energy, danceability and tempo.
-
-We will use Spotify made playlists of all decades (given the fact that the algorithm is also made by Spotify this seemed fitting).
-
-Playlists used:
-
-- All out 60s 
-- All out 70s
-- All out 80s
-- All out 90s
-- All out 00s
-- All out 10s
-- And because it is just 2021 we will not include the 2020s. 
+Arctic Monkeys is a band that blew up during the garage rock revival of the early 2000s. The band skyrocketed due to their debut album: Whatever People Say I am, That's What I'm Not (WPSIATWIN). Because of the fast paced music and Turner's cynical lyrics about nights out it resonated with a lot of young people. As they got older they progressed to a more sensitive look on music. Josh Homme, the main cog in Queens of the Stone Age, helped them with this. He produced their third album: Humbug; a more sensitive and thoughtful album. After this the band never went back to the aggressive boyish music they made before. I am very curious in what way this could be shown and proven with Spotify's API. By comparing different eras of the band I hope to give a clear view of their evolution. 
 
 ***
 For some reason I'm unable to display more than one Key-, Chordo-, Chromagram without them overlapping.
 
-### Quickest decade
-First we will be looking at the tempi of all songs for each decade. Then we will make tempograms for the most popular track from each decade.
+### Computer Classification
+```{r}
+library(compmus)
+
+get_conf_mat <- function(fit) {
+  outcome <- .get_tune_outcome_names(fit)
+  fit %>% 
+    collect_predictions() %>% 
+    conf_mat(truth = outcome, estimate = .pred_class)
+}  
+
+get_pr <- function(fit) {
+  fit %>% 
+    conf_mat_resampled() %>% 
+    group_by(Prediction) %>% mutate(precision = Freq / sum(Freq)) %>% 
+    group_by(Truth) %>% mutate(recall = Freq / sum(Freq)) %>% 
+    ungroup() %>% filter(Prediction == Truth) %>% 
+    select(class = Prediction, precision, recall)
+}  
+
+Humbug   <- 
+  get_playlist_audio_features("Sidney Francis", "0z3uHF5QB4sJ8KcHQLDjKw")
+
+Whatever <- get_playlist_audio_features("Sidney Francis", "20nBnqALo3mm3UehMXHvZq")
+
+Tranquility <- get_playlist_audio_features("Sidney Francis", "1pMfrsZuzMuWBCGOKhdclb")
+
+Favourite <- get_playlist_audio_features("Sidney Francis", "0lCqPpNJQ0jxXAP79aVQnY")
+```
+
+```{r}
+AM <-
+  bind_rows(
+    Humbug %>% mutate(playlist = "Humbug") %>% slice_head(n = 20),
+    Whatever %>% mutate(playlist = "WPSIATWIN") %>% slice_head(n = 20),
+    Tranquility %>% mutate(playlist = "TBHC") %>% slice_head(n = 20)
+  ) 
+
+  AM_features <-
+  AM %>%  # For your portfolio, change this to the name of your corpus.
+  add_audio_analysis() %>% 
+  mutate(
+    playlist = factor(playlist),
+    segments = map2(segments, key, compmus_c_transpose),
+    pitches =
+      map(
+        segments,
+        compmus_summarise, pitches,
+        method = "mean", norm = "manhattan"
+      ),
+    timbre =
+      map(
+        segments,
+        compmus_summarise, timbre,
+        method = "mean",
+      )
+  ) %>%
+  mutate(pitches = map(pitches, compmus_normalise, "clr")) %>%
+  mutate_at(vars(pitches, timbre), map, bind_rows) %>%
+  unnest(cols = c(pitches, timbre))
+
+AM_recipe <-
+  recipe(
+    playlist ~
+      danceability +
+      energy +
+      loudness +
+      speechiness +
+      acousticness +
+      instrumentalness +
+      liveness +
+      valence +
+      tempo +
+      duration +
+      C + `C#|Db` + D + `D#|Eb` +
+      E + `F` + `F#|Gb` + G +
+      `G#|Ab` + A + `A#|Bb` + B +
+      c01 + c02 + c03 + c04 + c05 + c06 +
+      c07 + c08 + c09 + c10 + c11 + c12,
+    data = AM_features,          # Use the same name as the previous block.
+  ) %>%
+  step_center(all_predictors()) %>%
+  step_scale(all_predictors())      # Converts to z-scores.
+  # step_range(all_predictors())    # Sets range to [0, 1].
+
+indie_cv <- AM_features %>% vfold_cv(5)
+
+knn_model <-
+  nearest_neighbor(neighbors = 1) %>%
+  set_mode("classification") %>% 
+  set_engine("kknn")
+indie_knn <- 
+  workflow() %>% 
+  add_recipe(AM_recipe) %>% 
+  add_model(knn_model) %>% 
+  fit_resamples(
+    indie_cv, 
+    control = control_resamples(save_pred = TRUE)
+  )
+
+indie_knn %>% get_conf_mat() %>% autoplot(type = "heatmap")
+```
+
+***
+Even though the computer does not classify everything perfectly, it is clear that there is something in WPSIATWIN that is distinctly different than TBHC or Humbug. WPSIATWIN lies the furthest from Josh Homme's interference chronologically (and in my opinion musically). In the heatmap it is clear that Humbug and THBHC have more in common than WPSIATWIN.
+
+### Quickest Albums
+First we will be looking at the tempi of all songs for a couple of Albums before Josh Homme's interference. 
 ```{r, tempo_histogram, echo=FALSE}
 
 
-sixties_hista<- 
-hist(sixties$tempo, main = "Tempi in the 60s",
+Whatever_hista<- 
+hist(Whatever$tempo, main = "Tempi in WPSIATWIN",
      xlab = "Tempo (BPM)",
      border="black", 
      col="blue", 
      xlim=c(50,250),
-     ylim = c(0, 60),
+     ylim = c(0, 10),
      freq = TRUE)
 
-seventies_hista<-
-  hist(seventies$tempo, main = "Tempi in the 70s",  xlab = "Tempo (BPM)",
+Favourite_hista<-
+  hist(Favourite$tempo, main = "Tempi in Favourite Worst Nightmare",  xlab = "Tempo (BPM)",
        border="black", 
      col="blue", 
-     xlim=c(50, 250),
-    ylim = c(0, 60),
+     xlim=c(50,250),
+     ylim = c(0, 5),
      freq = TRUE)
 
-eighties_hista<-
-   hist(eighties$tempo, main = "Tempi in the 80s",
+Humbug_hista<-
+   hist(Humbug$tempo, main = "Tempi in the Humbug",
      xlab = "Tempo (BPM)",
        border="black", 
      col="blue", 
      xlim=c(50,250),
-    ylim = c(0, 60),
+    ylim = c(0, 10),
      freq = TRUE)
      
-nineties_hista<-
- hist(nineties$tempo, main = "Tempi in the 90s",  xlab = "Tempo (BPM)",
+Tranquility_hista<-
+ hist(Tranquility$tempo, main = "Tempi TBHC",  xlab = "Tempo (BPM)",
       border="black", 
      col="blue", 
      xlim=c(50,250),
-     ylim = c(0, 60),
+     ylim = c(0, 5),
      freq = TRUE)
-
-zeroes_hista<- 
-   hist(thousands$tempo, main = "Tempi in the 00s",  xlab = "Tempo (BPM)",
-        border="black", 
-     col="blue", 
-     xlim=c(50,250),
-     ylim = c(0, 60),
-     freq = TRUE)
-
-tens_hista<-
-   hist(tens$tempo, main = "Tempi in the 10s", xlab = "Tempo (BPM)",
-        border="black", 
-     col="blue", 
-     xlim=c(50,250),
-     ylim = c(0, 60),
-     freq = TRUE,)
-
-
-
-
 ```
 
+***
+Both Whatever People Say I am, That's What I'm Not (WPSIATWIN) and Favourite Worst Nightmare (FWN), are from before Josh Homme got involved in the band's sounds. Humbug was the first album produce by Josh Homme and after that the band leaned more into this type of music. This is clear from the aggressive vibes of the first couple of albums which very well represented in these histograms. There is a clear difference in tempi on the different albums.
 
 ### Tempi Popular Songs 
 ```{r, one_analysis}
@@ -273,7 +356,7 @@ happy80s <-
 
 ```
 
-```{r, tempograms}
+```{r, cache=TRUE, tempograms}
 
 shame70s %>%
   tempogram(window_size = 8, hop_size = 1, cyclic = TRUE) %>%
