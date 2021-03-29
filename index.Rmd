@@ -277,7 +277,7 @@ Individual Songs {.storyboard}
 ### The Tracks
 The two songs that we are going to dive into are A Certain Romance from the album WPSIATWIN and The Jeweller's Hands from the album Humbug. Incidentally they are both the final tracks on their own albums.
 
-Here is A Certain Romance, with a loudness of -5.587 DB
+A Certain Romance has a loudness of -5.587 DB
 and a tempo of 137.949 BPM it is significantly louder and faster paced than The Jeweller's Hands (loudness: -8.116 DB, tempo 96.935 BPM) which are good representations for the albums. They are good representations for the albums because they are both the last track on their respective albums. This means that the band made a conscious artistic decision to send listeners away with the feelings they get from these songs, therefore they are good representations. 
 
 #### Listen here
@@ -287,7 +287,7 @@ and a tempo of 137.949 BPM it is significantly louder and faster paced than The 
 <iframe src="https://open.spotify.com/embed/track/0eDQj41kzBhMKQIkTt6OJR" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
 
 
-Here is The Jeweller's Hands
+
 <iframe src="https://open.spotify.com/embed/track/4PDPn7HosIycoXeoeibFc5" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
 
 
@@ -397,6 +397,7 @@ The chordorgram at the bottom is from a song called A Certain Romance, a track o
 Conclusion {.storyboard}
 =========================================
 
+### Satisfied?
 
 
 ```{r}
@@ -405,7 +406,9 @@ ggdraw() + draw_image("discog.jpg")
 ```
 
 ***
-On this page I have clearly demonstrated the greatest differences between the albums. The features that made them sound so differently have been put under a magnifying glass. What I had previously suspected turned out to be partially true. I thought this conclusion would be a lot more definitive then it turns out to be. The aggressive boyish music they used the make is clearly displayed in the graphs, but I hoped that the **valence** would be more decisive. I hoped that the melancholy of Humbug would be better displayed under this feature. **The second timbre component** did show a large difference between the albums. With WPSIATWIN scoring higher than Humbug on this feature, thus emphasizing the melancholy of Humbug a little. Overall I really enjoyed making a visual display of songs I have been listening to for a long time. A lot of magazines have described the differences they found the most prominent, but this page visually shows in what way they actually differ. I think the way that this album has been desribed as a pivotal point for the band really splits the bands' music up in multiple eras, but I enjoy them equally.
+On this repository I have demonstrated the greatest differences between the albums. The features that made them sound so differently have been put under a magnifying glass. What I had previously suspected turned out to be partially true. I thought this conclusion would be a lot more definitive then it turns out to be. The aggressive boyish music they used the make is clearly displayed in the graphs, but I hoped that the **valence** would be more decisive. I hoped that the melancholy of Humbug would be better displayed under this feature. 
+
+**The second timbre component** did show a large difference between the albums. With WPSIATWIN scoring higher than Humbug on this feature, thus emphasizing the melancholy of Humbug a little. Overall I really enjoyed making a visual display of songs I have been listening to for a long time. A lot of magazines have described the differences they found the most prominent, but this page visually shows in what way they actually differ. I think the way that Humbug has been described as a pivotal point for the band really splits the bands' music up in multiple eras, but I enjoy them equally.
 
 
 ```{r setup, include=FALSE}
