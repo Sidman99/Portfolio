@@ -1,4 +1,13 @@
 base
+<<<<<<< HEAD
+=======
+methods
+datasets
+utils
+grDevices
+graphics
+stats
+>>>>>>> fd2510462e4854807a599178740b71951e27b09b
 spotifyr
 ggplot2
 plotly
