@@ -158,7 +158,7 @@ ggplotly(all_plots)
 ```
 
 ***
-These scatter plots show us the values of the individual tracks for certain features from Spotify's API. **X-axis: Energy, Y-axis: Valence** On the x-axis we have the feature energy. I found this feature particularly important for this corpus. What is clear is that even though some of the tracks on WPSIATWIN are quite low in energy, the majority is very high. On Humbug the energy is still there but noticeably lower than on WPSIATWIN. On the y-axis we have valence, a feature that I thought would have been defined. The valence on Humbug seems to be a little more centered than on WPSIATWIN. In that scatter plot we see dots all over the place. The valence on Humbug tops at 0.7. The valence on WPSIATWIN tops off at 0.9 with three other songs higher than the highest valence on Humbug. 
+These scatter plots show us the values of the individual tracks for certain features from Spotify's API. **X-axis: Energy, Y-axis: Valence** On the x-axis we have the feature energy. I found this feature particularly important for this corpus. What is clear is that even though some of the tracks on WPSIATWIN are quite low in energy, the majority is very high. On Humbug the energy is still there but noticeably lower than on WPSIATWIN. On the y-axis we have valence, a feature that I thought would have been more defined. Whereas here the differences are not as big. The valence on Humbug seems to be a little more centered than on WPSIATWIN. In that scatter plot we see dots all over the place. The valence on Humbug tops at 0.7. The valence on WPSIATWIN tops off at 0.9 with three other songs higher than the highest valence on Humbug. 
 
 Tempo is also interesting. It is represented in the sizes of the dots. You can see that a lot of the tracks on WPSIATWIN have a, albeit slightly, higher value than Humbug. The mode is represented as the colour of the dots (yellow being major and blue minor). We can see that a larger percentage on WPSIATWIN is in a major scale than on Humbug 
 
@@ -269,13 +269,13 @@ The computer has made a classification of all the songs on both albums. It used 
 
 The features used in this particular matrix are instrumentalness, valence and the second timbre component (brightness). The second timbre component is very important in this classification. Something I expected previously, due to the dark undertones of the desert rock driven Humbug. I expected the valence feature to be a lot more important. In my perception WPSIATWIN is a more cheerful album, where the vocals skip on quick guitar riffs mostly in the major mode. Humbug has always been more melancholic in my ears, with near dreary organs and slower drum rhythms. So I assumed that valence would have played a bigger role. 
 
-The instrumentalness also seems to be important for classifying these two albums. I think this is the difference in maturity between the albums. Where WPSIATWIN is a very straight forward album where loudness sometimes seems to be more important than instrumentalness. On Humbug the songs fluctuate more between different moods. They experimented more with the sounds they can get out of their instrument. The melodical lines seem to be more thought through than before.
+The instrumentalness also seems to be important for classifying these two albums. I think this is the difference in maturity between the albums. Where WPSIATWIN is a very straight forward album where loudness sometimes seems to be more important than instrumentalness, on Humbug the songs fluctuate more between different moods. They experimented more with the sounds they can get out of their instrument. The melodical lines seem to be more thought through than before.
 
 Individual Songs {.storyboard}
 =========================================
 
 ### The Tracks
-The two songs that we are going to dive into are A Certain Romance from the album WPSIATWIN and The Jeweller's Hands from the album Humbug. Incidentally they are both the final tracks on their own albums.
+The two songs that we are going to dive into are A Certain Romance from the album WPSIATWIN and The Jeweller's Hands from the album Humbug. Incidentally they are both the final tracks on their own albums. The other two songs are their biggest hits from both albums. I Bet You Look Good On The Dancefloor that appears on WPSIATWIN and Crying Lightning from Humbug.
 
 A Certain Romance has a loudness of -5.587 DB
 and a tempo of 137.949 BPM it is significantly louder and faster paced than The Jeweller's Hands (loudness: -8.116 DB, tempo 96.935 BPM) which are good representations for the albums. They are good representations for the albums because they are both the last track on their respective albums. This means that the band made a conscious artistic decision to send listeners away with the feelings they get from these songs, therefore they are good representations. 
@@ -290,8 +290,9 @@ and a tempo of 137.949 BPM it is significantly louder and faster paced than The 
 
 <iframe src="https://open.spotify.com/embed/track/4PDPn7HosIycoXeoeibFc5" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
 
+<iframe src="https://open.spotify.com/embed/track/3DQVgcqaP3iSMbaKsd57l5" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
 
-
+<iframe src="https://open.spotify.com/embed/track/6wVWJl64yoTzU27EI8ep20" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
 
 ### Tempograms
 
