@@ -160,7 +160,7 @@ ggplotly(all_plots)
 ***
 These scatter plots show us the values of the individual tracks for certain features from Spotify's API. **X-axis: Energy, Y-axis: Valence** On the x-axis we have the feature energy. I found this feature particularly important for this corpus. What is clear is that even though some of the tracks on WPSIATWIN are quite low in energy, the majority is very high. On Humbug the energy is still there but noticeably lower than on WPSIATWIN. On the y-axis we have valence, a feature that I thought would have been defined. The valence on Humbug seems to be a little more centered than on WPSIATWIN. In that scatter plot we see dots all over the place. The valence on Humbug tops at 0.7. The valence on WPSIATWIN tops off at 0.9 with three other songs higher than the highest valence on Humbug. 
 
-Tempo is also interesting. It is represented in the sizes of the dots. You can see that a lot of the tracks on WPSIATWIN have a, albeit slightly, higher value than Humbug. The mode is represented in the colour of the dots (yellow being major and blue minor). We can see that a larger percentage on WPSIATWIN is in a major scale than on Humbug 
+Tempo is also interesting. It is represented in the sizes of the dots. You can see that a lot of the tracks on WPSIATWIN have a, albeit slightly, higher value than Humbug. The mode is represented as the colour of the dots (yellow being major and blue minor). We can see that a larger percentage on WPSIATWIN is in a major scale than on Humbug 
 
 ### Get in line!
 
